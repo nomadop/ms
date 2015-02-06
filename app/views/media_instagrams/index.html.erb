@@ -1,0 +1,45 @@
+<h1>Listing media_instagrams</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Url</th>
+      <th>Media type</th>
+      <th>Tags</th>
+      <th>Comment count</th>
+      <th>Created time</th>
+      <th>Location</th>
+      <th>Location name</th>
+      <th>Lat</th>
+      <th>Lng</th>
+      <th>Width</th>
+      <th>Height</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @media_instagrams.each do |media_instagram| %>
+      <tr>
+        <td><%= media_instagram.url %></td>
+        <td><%= media_instagram.media_type %></td>
+        <td><%= media_instagram.tags %></td>
+        <td><%= media_instagram.comment_count %></td>
+        <td><%= media_instagram.created_time %></td>
+        <td><%= media_instagram.location_id %></td>
+        <td><%= media_instagram.location_name %></td>
+        <td><%= media_instagram.lat %></td>
+        <td><%= media_instagram.lng %></td>
+        <td><%= media_instagram.width %></td>
+        <td><%= media_instagram.height %></td>
+        <td><%= link_to 'Show', media_instagram %></td>
+        <td><%= link_to 'Edit', edit_media_instagram_path(media_instagram) %></td>
+        <td><%= link_to 'Destroy', media_instagram, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Media instagram', new_media_instagram_path %>

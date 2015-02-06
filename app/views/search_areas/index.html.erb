@@ -1,0 +1,38 @@
+<h1>Listing search_areas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Lat</th>
+      <th>Lng</th>
+      <th>Total</th>
+      <th>Cycle</th>
+      <th>Time to cycle</th>
+      <th>Time Zone</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% now = Time.now.to_i %>
+    <% @search_areas.each do |search_area| %>
+      <tr>
+        <td><%= link_to search_area.id, search_area %></td>
+        <td><%= search_area.lat %></td>
+        <td><%= search_area.lng %></td>
+        <td><%= search_area.total %></td>
+        <td><%= search_area.cycle %></td>
+        <td><%= search_area.last_searched_at.to_i + search_area.cycle - now %></td>
+        <td><%= search_area.time_zone %></td>
+        <td><%= link_to 'Show', search_area %></td>
+        <td><%= link_to 'Edit', edit_search_area_path(search_area) %></td>
+        <td><%= link_to 'Destroy', search_area, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Search Area', new_search_area_path %>

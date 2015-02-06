@@ -1,0 +1,43 @@
+<style>
+  #map-canvas {
+    height: 900px;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    float: right;
+  }
+</style>
+
+<script type="text/javascript" src="http://ditu.google.cn/maps/api/js?language=zh-CN"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+<script>
+  function show_media (marker) {
+    var innerHTML = '<img src="' + marker.media_url + '" width=100>';
+    media_window = new google.maps.InfoWindow({
+      content: innerHTML
+    });
+    media_window.open(map, marker);
+  }
+
+  function initialize() {
+    var mapOptions = {
+      zoom: 9,
+      center: new google.maps.LatLng(<%= @media_instagrams.first.lat %>, <%= @media_instagrams.first.lng %>)
+    };
+    window.map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+    <% @media_instagrams.each do |mi| %>
+      var marker<%= mi.id %> = new google.maps.Marker({
+        position: new google.maps.LatLng(<%= mi.lat %>, <%= mi.lng %>),
+        map: map,
+        media_id: <%= mi.id %>,
+        media_url: '<%= mi.url %>'
+      });
+      google.maps.event.addListener(marker<%= mi.id %>, 'click', function(){show_media(marker<%= mi.id %>)});
+    <% end %>
+  }
+
+  google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+<div id="map-canvas"></div>

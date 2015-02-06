@@ -1,0 +1,22 @@
+all.each do |a|
+  m = MediaInstagram.find_by(url: a.url)
+  r = JSON.parse(a.detect_result)
+  m.detect_results = r.map do |b|
+    DetectResult.create(
+      age_range: b['age']['range'],
+      age_value: b['age']['value'],
+      gender_conf: b['gender']['confidence'],
+      gender_value: b['gender']['value'],
+      race_conf: b['race']['confidence'],
+      race_value: b['race']['value'],
+      smiling: b['smiling']['value'],
+      pitch_angle: b['pose']['pitch_angle']['value'],
+      roll_angle: b['pose']['roll_angle']['value'],
+      yaw_angle: b['pose']['yaw_angle']['value'],
+      center_x: b['position']['center']['x'],
+      center_y: b['position']['center']['y'],
+      width: b['position']['width'],
+      height: b['position']['height'] 
+    )
+  end
+end

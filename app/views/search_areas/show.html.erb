@@ -1,0 +1,41 @@
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script>
+  var medias = $.parseJSON('<%= raw @medias.to_json(only: [:id, :lat, :lng, :created_time]) %>');
+</script>
+
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Lat:</strong>
+  <%= @search_area.lat %>
+</p>
+
+<p>
+  <strong>Lng:</strong>
+  <%= @search_area.lng %>
+</p>
+
+<p>
+  <strong>Cycle:</strong>
+  <%= @search_area.cycle %>
+</p>
+
+<p>
+  <strong>Time Zone:</strong>
+  <%= @search_area.time_zone %>
+</p>
+
+<%= link_to 'East Area', search_area_path(@search_area.east_area) if @search_area.east_area %> |
+<%= link_to 'South Area', search_area_path(@search_area.south_area) if @search_area.south_area %> |
+<%= link_to 'West Area', search_area_path(@search_area.west_area) if @search_area.west_area %> |
+<%= link_to 'North Area', search_area_path(@search_area.north_area) if @search_area.north_area %>
+
+<%= high_chart("count", @count) if @count %>
+
+<%= high_chart("distribution", @distribution) if @distribution %>
+
+<img src="https://ditu.google.cn/maps/api/staticmap?markers=size:large|<%= "#{@search_area.lat},#{@search_area.lng}" %>&size=500x500&zoom=15" alt="">
+
+
+<%= link_to 'Edit', edit_search_area_path(@search_area) %> |
+<%= link_to 'Back', search_areas_path %>

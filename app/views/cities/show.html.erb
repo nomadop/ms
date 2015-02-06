@@ -1,0 +1,30 @@
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @city.name %>
+</p>
+
+<p>
+  <strong>Code:</strong>
+  <%= @city.code %>
+</p>
+
+<p>
+  <strong>Time zone:</strong>
+  <%= @city.time_zone %>
+</p>
+
+<p>
+  <strong>Suggest bounds:</strong>
+  <%= @city.suggest_bounds %>
+</p>
+
+<%= high_chart("count", @count) if @count %>
+
+<%= high_chart("distribution", @distribution) if @distribution %>
+
+<%= link_to 'Search Areas', search_areas_path(city_id: @city.id) %> |
+<%= link_to 'Edit', edit_city_path(@city) %> |
+<%= link_to 'Back', cities_path %>

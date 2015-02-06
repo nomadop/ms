@@ -1,0 +1,61 @@
+<%= form_for(@media_instagram) do |f| %>
+  <% if @media_instagram.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@media_instagram.errors.count, "error") %> prohibited this media_instagram from being saved:</h2>
+
+      <ul>
+      <% @media_instagram.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :url %><br>
+    <%= f.text_field :url %>
+  </div>
+  <div class="field">
+    <%= f.label :media_type %><br>
+    <%= f.text_field :media_type %>
+  </div>
+  <div class="field">
+    <%= f.label :tags %><br>
+    <%= f.text_field :tags %>
+  </div>
+  <div class="field">
+    <%= f.label :comment_count %><br>
+    <%= f.number_field :comment_count %>
+  </div>
+  <div class="field">
+    <%= f.label :created_time %><br>
+    <%= f.datetime_select :created_time %>
+  </div>
+  <div class="field">
+    <%= f.label :location_id %><br>
+    <%= f.text_field :location_id %>
+  </div>
+  <div class="field">
+    <%= f.label :location_name %><br>
+    <%= f.text_field :location_name %>
+  </div>
+  <div class="field">
+    <%= f.label :lat %><br>
+    <%= f.text_field :lat %>
+  </div>
+  <div class="field">
+    <%= f.label :lng %><br>
+    <%= f.text_field :lng %>
+  </div>
+  <div class="field">
+    <%= f.label :width %><br>
+    <%= f.number_field :width %>
+  </div>
+  <div class="field">
+    <%= f.label :height %><br>
+    <%= f.number_field :height %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

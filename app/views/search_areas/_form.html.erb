@@ -1,0 +1,33 @@
+<%= form_for(@search_area) do |f| %>
+  <% if @search_area.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@search_area.errors.count, "error") %> prohibited this search_area from being saved:</h2>
+
+      <ul>
+      <% @search_area.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :lat %><br>
+    <%= f.text_field :lat %>
+  </div>
+  <div class="field">
+    <%= f.label :lng %><br>
+    <%= f.text_field :lng %>
+  </div>
+  <div class="field">
+    <%= f.label :cycle %><br>
+    <%= f.number_field :cycle %>
+  </div>
+  <div class="field">
+    <%= f.label :time_zone %><br>
+    <%= f.number_field :time_zone %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

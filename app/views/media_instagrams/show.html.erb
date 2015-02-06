@@ -1,0 +1,59 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Url:</strong>
+  <%= @media_instagram.url %>
+</p>
+
+<p>
+  <strong>Media type:</strong>
+  <%= @media_instagram.media_type %>
+</p>
+
+<p>
+  <strong>Tags:</strong>
+  <%= @media_instagram.tags %>
+</p>
+
+<p>
+  <strong>Comment count:</strong>
+  <%= @media_instagram.comment_count %>
+</p>
+
+<p>
+  <strong>Created time:</strong>
+  <%= @media_instagram.created_time %>
+</p>
+
+<p>
+  <strong>Location:</strong>
+  <%= @media_instagram.location_id %>
+</p>
+
+<p>
+  <strong>Location name:</strong>
+  <%= @media_instagram.location_name %>
+</p>
+
+<p>
+  <strong>Lat:</strong>
+  <%= @media_instagram.lat %>
+</p>
+
+<p>
+  <strong>Lng:</strong>
+  <%= @media_instagram.lng %>
+</p>
+
+<p>
+  <strong>Width:</strong>
+  <%= @media_instagram.width %>
+</p>
+
+<p>
+  <strong>Height:</strong>
+  <%= @media_instagram.height %>
+</p>
+
+<%= link_to 'Edit', edit_media_instagram_path(@media_instagram) %> |
+<%= link_to 'Back', media_instagrams_path %>

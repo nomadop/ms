@@ -1,0 +1,56 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+#
+hk_default: &default
+  adapter: mysql2
+  host: 119.28.4.133
+  port: 3306
+  encoding: utf8
+  database: db_strip
+  username: ustrip
+  password: qazwsx123456
+  pool: 100
+  timeout: 5000
+
+hk_development:
+  <<: *default
+  # database: db/development.sqlite3
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+hk_test:
+  <<: *default
+  # database: db/test.sqlite3
+
+hk_production:
+  <<: *default
+  # database: db/production.sqlite3
+
+default: &default
+  adapter: postgresql
+  host: 127.0.0.1
+  port: 5433
+  encoding: utf-8
+  username: postgres
+  password: 123456
+  pool: 100
+  timeout: 5000
+
+development:
+  <<: *default
+  database: media_instagram
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  database: media_instagram
+
+production:
+  <<: *default
+  database: media_instagram

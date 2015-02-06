@@ -1,0 +1,2 @@
+module MediaInstagramsHelper
+end
