@@ -34,6 +34,7 @@ class City < ActiveRecord::Base
   end
 
   def add_search_areas_from_bounds
+    get_suggested_bounds
     locs = split_bounds
     locs.map do |loc|
       area = SearchArea.find_or_create_by(lat: loc.lat, lng: loc.lng, time_zone: time_zone)
