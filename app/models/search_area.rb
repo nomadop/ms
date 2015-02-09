@@ -9,6 +9,15 @@ class SearchArea < ActiveRecord::Base
 
   CYCLE_TABLE = [6.hours, 12.hours, 1.day, 2.days, 4.days, 1.week, 2.weeks, 1.month]
 
+  def statistics_mean_by hour
+    utc_hour = hour - time_zone
+    utc_hour += 24 if utc_hour < 0
+    res = MediaInstagram.where("lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?", (lat - 0.005).round(3), (lat + 0.005).round(3), (lng - 0.005).round(3), (lng + 0.005).round(3)).where("created_time_int % 86400 BETWEEN ? AND ?", utc_hour.hours, (utc_hour + 1).hours).group("created_time_int / 86400").count
+    distribution = res.sort_by{|k, v| k}[1...-1].map{|x| x[1]}
+    distribution.extend(DescriptiveStatistics)
+    distribution.mean
+  end
+
   def get_distribution hour, method
     datas = statistics.values.map{ |s| s[:distribution][hour] }
     datas.extend(DescriptiveStatistics)
@@ -98,6 +107,7 @@ class SearchArea < ActiveRecord::Base
   def self.analysis_all
     areas = SearchArea.all
     areas.each do |area|
+      area.statistics = {}
       ms = area.medias
       next if ms.empty?
       data = ms.group_by{ |m| (m.created_time.utc + area.time_zone.hours).to_date }

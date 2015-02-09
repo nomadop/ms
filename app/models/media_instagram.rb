@@ -6,6 +6,7 @@ class MediaInstagram < ActiveRecord::Base
   serialize :filter_tags, Array
   serialize :tags, Array
 
+  before_save :set_created_time_int
   after_initialize :init_serialize
 
   Filters = [:couple?, :family?, :friends?, :group?]
@@ -49,7 +50,6 @@ class MediaInstagram < ActiveRecord::Base
         begin
           media = enum.next
           io = open(media.url)
-          
         rescue Exception => e
           break
         end
@@ -110,5 +110,9 @@ class MediaInstagram < ActiveRecord::Base
   def init_serialize
     self.filter_tags ||= []
     self.tags ||= []
+  end
+
+  def set_created_time_int
+    self.created_time_int = created_time.to_i
   end
 end
