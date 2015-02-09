@@ -25,6 +25,9 @@
 
 <%= high_chart("distribution", @distribution) if @distribution %>
 
+<% if @city.search_areas.blank? %>
+<%= link_to 'Create Search Areas', create_search_areas_city_path(@city) %> |
+<% end %>
 <%= link_to 'Search Areas', search_areas_path(city_id: @city.id) %> |
 <%= link_to 'Edit', edit_city_path(@city) %> |
 <%= link_to 'Back', cities_path %>

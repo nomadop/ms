@@ -1,5 +1,11 @@
 class CitiesController < ApplicationController
-  before_action :set_city, only: [:show, :edit, :update, :destroy]
+  before_action :set_city, only: [:show, :edit, :update, :destroy, :create_search_areas]
+
+  def create_search_areas
+    @city.add_search_areas_from_bounds
+
+    render :show, status: :ok, location: @city
+  end
 
   # GET /cities
   # GET /cities.json
@@ -10,15 +16,16 @@ class CitiesController < ApplicationController
   # GET /cities/1
   # GET /cities/1.json
   def show
-    sdate = @city.statistics.keys[1].to_date
-    edate = @city.statistics.keys.last.to_date
-    stime = Time.new(sdate.year, sdate.month, sdate.day, 0, 0, 0, @city.zone)
-    etime = Time.new(edate.year, edate.month, edate.day, 0, 0, 0, @city.zone)
+    if @city.statistics.size > 2
+      sdate = @city.statistics.keys[1].to_date
+      edate = @city.statistics.keys.last.to_date
+      stime = Time.new(sdate.year, sdate.month, sdate.day, 0, 0, 0, @city.zone)
+      etime = Time.new(edate.year, edate.month, edate.day, 0, 0, 0, @city.zone)
 
-    data = @city.statistics.values[1...-1].map{|s| s[:total]}
-    interval = 1.day
+      data = @city.statistics.values[1...-1].map{|s| s[:total]}
+      interval = 1.day
 
-    @count = LazyHighCharts::HighChart.new('graph') do |f|
+      @count = LazyHighCharts::HighChart.new('graph') do |f|
         f.title(:text => "Medias Count")
         f.xAxis(type: "datetime", maxZoom: (etime - stime).to_i)
         f.series(
@@ -68,6 +75,7 @@ class CitiesController < ApplicationController
         f.legend(:align => 'right', :verticalAlign => 'top', :y => 150, :x => -50, :layout => 'vertical',)
         f.chart({:defaultSeriesType=>"spline"})
       end
+    end
   end
 
   # GET /cities/new
@@ -127,6 +135,7 @@ class CitiesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def city_params
+      params[:city][:suggest_bounds] = JSON.parse(params[:city][:suggest_bounds])
       params.require(:city).permit(:name, :code, :time_zone, :suggest_bounds)
     end
 end

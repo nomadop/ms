@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :cities
+  resources :cities do
+    member do
+      post :create_search_areas
+    end
+  end
 
   resources :search_areas
 
