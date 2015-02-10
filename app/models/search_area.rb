@@ -9,6 +9,14 @@ class SearchArea < ActiveRecord::Base
 
   CYCLE_TABLE = [6.hours, 12.hours, 1.day, 2.days, 4.days, 1.week, 2.weeks, 1.month]
 
+  def tags
+    medias.flat_map(&:tags).group_by(&:to_s).sort_by{|k, v| v.count}.inject({}) do |res, kvp|
+      k, v = kvp
+      res[k] = v.count
+      res
+    end
+  end
+
   def statistics_mean_by hour
     utc_hour = hour - time_zone
     utc_hour += 24 if utc_hour < 0

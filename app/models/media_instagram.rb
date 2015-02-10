@@ -40,6 +40,15 @@ class MediaInstagram < ActiveRecord::Base
     detect_results.size > 10
   end
 
+  def self.tags_by_geoloc lat, lng, radius
+    medias = where_by_geoloc(lat, lng, radius)
+    medias.flat_map(&:tags).group_by(&:to_s).sort_by{|k, v| v.count}.inject({}) do |res, kvp|
+      k, v = kvp
+      res[k] = v.count
+      res
+    end
+  end
+
   def self.statistics_by opts = {}
     default_options = {
       lat: nil, # 纬度
