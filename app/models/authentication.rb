@@ -3,6 +3,7 @@ class Authentication < ActiveRecord::Base
 
   def get_client
     unless access_token.blank? || access_token == 'updating'
+      sleep(300) if client_count > 5000
       Authentication.connection.execute %Q(UPDATE "authentications" SET "client_count" = "client_count" + 1 WHERE "authentications"."id" = #{id})
       set_instagram_config
       Instagram.client(access_token: access_token)

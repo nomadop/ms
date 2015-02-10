@@ -40,6 +40,53 @@ class MediaInstagram < ActiveRecord::Base
     detect_results.size > 10
   end
 
+  def self.statistics_by opts = {}
+    default_options = {
+      lat: nil, # 纬度
+      lng: nil, # 经度
+      radius: 0.31, # 半径, 单位英里
+      hours: (6..8), # 目标时间段, 取值范围0~23, 对应 0:00 至 23:00
+      zone: 8, # 时区, 整形, 正数代表 GMT+n 时区, 负数代表 GMT-n 时区, 0 代表 UTC
+      methods: [:sum, :mean, :standard_deviation], # 统计方法, sum: 总和, mean: 期望, max, min: 极值, standard_deviation: 方差 etc.
+    }
+    options = default_options.merge(opts)
+    options[:hours] = Array(options[:hour]) unless options[:hour].nil?
+    s_hour = options[:hours].map(&:to_i).min - options[:zone].to_i
+    e_hour = options[:hours].map(&:to_i).max - options[:zone].to_i + 1
+    res = []
+    if s_hour * e_hour > 0
+      if s_hour < 0
+        s_hour += 24
+        e_hour += 24
+      end
+      res = where_by_geoloc(options[:lat].to_f, options[:lng].to_f, options[:radius].to_f).where("created_time_int % 86400 BETWEEN ? AND ?", s_hour.hours, e_hour.hours).group("created_time_int / 86400").count
+    else
+      res = where_by_geoloc(options[:lat].to_f, options[:lng].to_f, options[:radius].to_f).where("created_time_int % 86400 BETWEEN ? AND ? OR created_time_int % 86400 BETWEEN ? AND ?", (s_hour + 24).hours, 24.hours, 0, e_hour.hours).group("created_time_int / 86400").count
+    end
+    distribution = res.sort_by{|k, v| k}[1...-1].map{|x| x[1]}
+    distribution.extend(DescriptiveStatistics)
+    options[:methods].inject({}) do |res, m|
+      res[m] = distribution.send(m)
+      res
+    end
+  end
+
+  def self.where_by_geoloc lat, lng, radius
+    where.not(lat: nil).where.not(lng: nil).where("#{distance_sql(lat, lng)} < ?", radius)
+  end
+
+  def self.distance_sql lat, lng
+    latrad = deg2rad(lat)
+    lngrad = deg2rad(lng)
+    multiplier = 3963.1899999999996
+
+    "(ACOS(least(1,COS(#{latrad})*COS(#{lngrad})*COS(RADIANS(media_instagrams.lat))*COS(RADIANS(media_instagrams.lng))+COS(#{latrad})*SIN(#{lngrad})*COS(RADIANS(media_instagrams.lat))*SIN(RADIANS(media_instagrams.lng))+SIN(#{latrad})*SIN(RADIANS(media_instagrams.lat))))*#{multiplier})"
+  end
+
+  def self.deg2rad(degrees)
+    degrees.to_f / 180.0 * Math::PI
+  end
+
   def self.img_wall medias
     size = medias.size
     cols = (size**0.5).round(0)

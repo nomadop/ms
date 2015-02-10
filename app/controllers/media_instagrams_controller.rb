@@ -1,6 +1,11 @@
 class MediaInstagramsController < ApplicationController
   before_action :set_media_instagram, only: [:show, :edit, :update, :destroy]
 
+  def statistics
+    params[:hours] = params[:hours].split(',') if params[:hours]
+    render json: MediaInstagram.statistics_by(params.symbolize_keys)
+  end
+
   def filter_map
     @media_instagrams = MediaInstagram.where("filter_tags LIKE ?", "%#{params[:filter]}%")
   end

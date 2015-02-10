@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   resources :media_instagrams do
     collection do
+      get 'statistics'
       get 'display'
       get 'filter_map'
     end
