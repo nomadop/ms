@@ -104,11 +104,15 @@ class SearchArea < ActiveRecord::Base
   def search max_time = Time.now.to_i, min_time = last_searched_at, update_search_time = true
     MediaSearch.create(lat: lat, lng: lng, max_time: max_time, min_time: min_time, time_zone: time_zone, search_area_id: id)
     update(last_searched_at: max_time || Time.now.to_i) if update_search_time
+  rescue Exception => e
+    puts e
   end
 
   def history_search max_time = Time.now.to_i, min_time = max_time - 1.year, interval = 1.day
-    min_time.step(max_time, interval).each_cons(2) do |min, max|
-      search(max, min, false)
+    MediaSearch.transaction do
+      min_time.step(max_time, interval).each_cons(2) do |min, max|
+        search(max, min, false)
+      end
     end
   end
 
