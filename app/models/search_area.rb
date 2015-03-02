@@ -109,10 +109,8 @@ class SearchArea < ActiveRecord::Base
   end
 
   def history_search max_time = Time.now.to_i, min_time = max_time - 1.year, interval = 1.day
-    MediaSearch.transaction do
-      min_time.step(max_time, interval).each_cons(2) do |min, max|
-        search(max, min, false)
-      end
+    min_time.step(max_time, interval).each_cons(2) do |min, max|
+      search(max, min, false)
     end
   end
 
