@@ -130,7 +130,7 @@ class SearchArea < ActiveRecord::Base
 
   def self.cycle_check
     now = Time.now.to_i
-    CycleCheckWorker.perform_in(1.hour)
+    CycleCheckWorker.perform_in(10.minutes)
     ready_areas = where("last_searched_at + cycle < ?", now)
     ready_areas.each do |a|
       if a.cycle == 0
