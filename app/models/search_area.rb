@@ -9,6 +9,10 @@ class SearchArea < ActiveRecord::Base
 
   CYCLE_TABLE = [6.hours, 12.hours, 1.day, 2.days, 4.days, 1.week, 2.weeks, 1.month]
 
+  def ll
+    "#{lat},#{lng}"
+  end
+
   def tags
     medias.flat_map(&:tags).group_by(&:to_s).sort_by{|k, v| v.count}.inject({}) do |res, kvp|
       k, v = kvp
@@ -99,6 +103,7 @@ class SearchArea < ActiveRecord::Base
 
   def medias
     MediaInstagram.where("lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?", (lat - 0.005).round(3), (lat + 0.005).round(3), (lng - 0.005).round(3), (lng + 0.005).round(3)).order(:created_time)
+    # MediaInstagram.where(lat: ((lat - 0.005).round(3)...(lat + 0.005).round(3)), lng: ((lng - 0.005).round(3)...(lng + 0.005).round(3))).order(:created_time)
   end
 
   def search max_time = Time.now.to_i, min_time = last_searched_at, update_search_time = true
@@ -130,7 +135,7 @@ class SearchArea < ActiveRecord::Base
 
   def self.cycle_check
     now = Time.now.to_i
-    CycleCheckWorker.perform_in(10.minutes)
+    CycleCheckWorker.perform_in(30.minutes)
     ready_areas = where("last_searched_at + cycle < ?", now)
     ready_areas.each do |a|
       if a.cycle == 0

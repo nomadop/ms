@@ -66,3 +66,5 @@ gem 'descriptive_statistics', '~> 2.4.0', :require => 'descriptive_statistics/sa
 gem 'activerecord-postgres-hstore'
 gem 'mini_magick'
 gem 'hashie'
+
+gem 'spreadsheet'
