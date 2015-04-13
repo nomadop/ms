@@ -4,7 +4,7 @@ class MediaInstagramsController < ApplicationController
   def analysis
     @media_instagram.analysis_from_faceplusplus if !@media_instagram.no_face && @media_instagram.detect_results.empty?
 
-    render json: @media_instagram.reload.as_json(only: [:id, :url, :tags, :lat, :lng], include: {detect_results: {only: [], methods: [:age, :gender, :left_top, :real_width, :real_height]}})
+    render json: @media_instagram.reload.as_json(only: [:id, :url, :tags, :lat, :lng], include: {detect_results: {only: :gender_value, methods: [:age, :left_top, :real_width, :real_height]}})
   end
 
   def blob
