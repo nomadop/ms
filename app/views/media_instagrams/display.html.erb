@@ -2,19 +2,27 @@
   function draw_medias () {
     <% @media_instagrams.each do |mi| %>
     var media<%= mi.id %> = new Image();
-    media<%= mi.id %>.src = "<%= mi.url %>";
+    var media_info<%= mi.id %> = $('#media_info<%= mi.id %>');
+    media<%= mi.id %>.src = "<%= blob_media_instagram_path(mi) %>";
     media<%= mi.id %>.onload = function() {
       try {
         var canvas = $('canvas[data-mid="<%= mi.id %>"]')[0];
         var content = canvas.getContext("2d");
         content.drawImage(media<%= mi.id %>, 0, 0);
-        <% mi.detect_results.each.with_index(1) do |dr, i| %>
-        var color = "#<%= [255 * (100 - dr.gender) / 100, 0, 255 * dr.gender / 100].map{ |x| "%02X" % x }.join %>";
-        content.strokeStyle = color;
-        content.strokeRect(<%= dr.left_top.join(',') %>, <%= dr.real_width %>, <%= dr.real_height %>);
-        content.fillStyle = "#FFFFFF";
-        content.fillText('<%= i %>', <%= dr.left_top.join(',') %>);
-        <% end %>
+
+        media_info<%= mi.id %>.html('正在分析...');
+        $.post('<%= analysis_media_instagram_path(mi) %>', {}, function(data, textStatus, xhr) {
+          media_info<%= mi.id %>.html(document.createTextNode(JSON.stringify(data, null, 4)));
+          console.log(data);
+
+          $.each(data['detect_results'], function(index, dr) {
+            var color = "#ffffff";
+            content.strokeStyle = color;
+            content.strokeRect(dr.left_top[0], dr.left_top[1], dr.real_width, dr.real_height);
+            content.fillStyle = "#FFFFFF";
+            content.fillText(index + 1, dr.left_top[0], dr.left_top[1]);
+          });
+        });
       } catch(e) {
         console.log(e);
       }
@@ -38,7 +46,9 @@
   <tbody>
     <% @media_instagrams.each do |media_instagram| %>
       <tr>
-        <td><%= raw media_instagram.to_json(only: [:id, :url, :tags, :lat, :lng], include: {detect_results: {only: [], methods: [:age, :gender]}}).split(/(?<=[{,])|(?=})/).join('<br>') %></td>
+        <td>
+          <pre id="media_info<%= media_instagram.id %>">等待图片加载...</pre>
+        </td>
         <td>
           <canvas data-mid="<%= media_instagram.id %>" width=<%= media_instagram.width %> height=<%= media_instagram.height %>></canvas>
         </td>

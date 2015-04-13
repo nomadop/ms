@@ -1,5 +1,17 @@
 class MediaInstagramsController < ApplicationController
-  before_action :set_media_instagram, only: [:show, :edit, :update, :destroy]
+  before_action :set_media_instagram, only: [:show, :edit, :update, :destroy, :blob, :analysis]
+
+  def analysis
+    @media_instagram.analysis_from_faceplusplus if !@media_instagram.no_face && @media_instagram.detect_results.empty?
+
+    render json: @media_instagram.as_json(only: [:id, :url, :tags, :lat, :lng], include: {detect_results: {only: [], methods: [:age, :gender, :left_top, :real_width, :real_height]}})
+  end
+
+  def blob
+    file = open(@media_instagram.url)
+
+    send_data file.read, disposition: 'inline', type: file.meta['content-type']
+  end
 
   def statistics
     params[:hours] = params[:hours].split(',') if params[:hours]
@@ -13,7 +25,7 @@ class MediaInstagramsController < ApplicationController
   # GET /media_instagrams
   # GET /media_instagrams.json
   def index
-    @media_instagrams = MediaInstagram.all
+    @media_instagrams = MediaInstagram.page(params[:page]).per(20)
   end
 
   def display

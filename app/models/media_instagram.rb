@@ -11,6 +11,41 @@ class MediaInstagram < ActiveRecord::Base
 
   Filters = [:couple?, :family?, :friends?, :group?]
 
+  def analysis_from_faceplusplus
+    response = Faraday.new.post('http://apius.faceplusplus.com/v2/detection/detect', {
+      api_key: '18fad4c56337c9bb632a50bcda09d84e',
+      api_secret: 'axdigupYLBeTD5s0sOB1ii2NWKewHa_6',
+      url: self.url,
+      attribute: 'glass,pose,gender,age,race,smiling'
+    })
+    result = JSON.parse(response.body)
+
+    if result['face']
+      detect_results.destroy_all
+      result['face'].each do |face|
+        DetectResult.create(
+          media_instagram_id: self.id,
+          age_range: face['attribute']['age']['range'],
+          age_value: face['attribute']['age']['value'],
+          gender_conf: face['attribute']['gender']['confidence'],
+          gender_value: face['attribute']['gender']['value'],
+          race_conf: face['attribute']['race']['confidence'],
+          race_value: face['attribute']['race']['value'],
+          smiling: face['attribute']['smiling']['value'],
+          pitch_angle: face['attribute']['pose']['pitch_angle']['value'],
+          roll_angle: face['attribute']['pose']['roll_angle']['value'],
+          yaw_angle: face['attribute']['pose']['yaw_angle']['value'],
+          center_x: face['position']['center']['x'],
+          center_y: face['position']['center']['y'],
+          width: face['position']['width'],
+          height: face['position']['height']
+        )
+      end
+    else
+      self.update(no_face: true)
+    end
+  end
+
   def ll
     "#{lat},#{lng}"
   end

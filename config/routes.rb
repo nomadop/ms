@@ -17,6 +17,11 @@ Rails.application.routes.draw do
       get 'display'
       get 'filter_map'
     end
+
+    member do
+      get 'blob'
+      post 'analysis'
+    end
   end
 
   get 'home/test'

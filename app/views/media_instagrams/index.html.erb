@@ -33,6 +33,7 @@
         <td><%= media_instagram.width %></td>
         <td><%= media_instagram.height %></td>
         <td><%= link_to 'Show', media_instagram %></td>
+        <td><%= link_to 'Analysis', analysis_media_instagram_path(media_instagram) %></td>
         <td><%= link_to 'Edit', edit_media_instagram_path(media_instagram) %></td>
         <td><%= link_to 'Destroy', media_instagram, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
@@ -41,5 +42,7 @@
 </table>
 
 <br>
+
+<%= paginate @media_instagrams %>
 
 <%= link_to 'New Media instagram', new_media_instagram_path %>
