@@ -4,6 +4,9 @@
     var media<%= mi.id %> = new Image();
     var media_info<%= mi.id %> = $('#media_info<%= mi.id %>');
     media<%= mi.id %>.src = "<%= blob_media_instagram_path(mi) %>";
+    media<%= mi.id %>.onerror = function() {
+      media_info<%= mi.id %>.html('图片加载失败.');
+    }
     media<%= mi.id %>.onload = function() {
       try {
         var canvas = $('canvas[data-mid="<%= mi.id %>"]')[0];
