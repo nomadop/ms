@@ -36,7 +36,7 @@ class MediaInstagramsController < ApplicationController
     end
     page = params[:page] || 1
     per = params[:per] || 20
-    @media_instagrams = @media_instagrams.includes(:detect_results).page(page).per(per)
+    @media_instagrams = @media_instagrams.includes(:detect_results).order(id: :desc).page(page).per(per)
   end
 
   # GET /media_instagrams/1
